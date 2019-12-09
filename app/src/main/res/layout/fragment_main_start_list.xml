@@ -5,23 +5,23 @@
     >
 
     <data>
+        <import type="android.view.View"/>
+
         <variable
             name="viewModel"
-            type="org.slas.test09112019.presentation.main.MainViewModel" />
+            type="org.slas.test09112019.presentation.main.list.StartListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <fragment
-            android:id="@+id/nav_main_host"
+        <Button
+            android:id="@+id/buttonStartList"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            app:navGraph="@navigation/graph_main"
-            app:defaultNavHost="true"
+            android:text="Start list"
+            android:onClick="@{() -> viewModel.onButtonClick()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,5 +29,6 @@
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </layout>
