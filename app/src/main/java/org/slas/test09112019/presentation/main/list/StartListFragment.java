@@ -1,16 +1,11 @@
 package org.slas.test09112019.presentation.main.list;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
 import org.slas.test09112019.BR;
 import org.slas.test09112019.R;
-import org.slas.test09112019.databinding.FragmentMainProfileBinding;
 import org.slas.test09112019.databinding.FragmentMainStartListBinding;
 import org.slas.test09112019.presentation.base.BaseFragment;
 
@@ -56,7 +51,6 @@ public class StartListFragment extends BaseFragment<FragmentMainStartListBinding
     private void init(){
         fragmentMainStartListBinding = getViewDataBinding();
         startListViewModel.setNavigator(this);
-
     }
 
     private void setupLiveData(){

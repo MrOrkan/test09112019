@@ -1,18 +1,16 @@
 package org.slas.test09112019.presentation.main;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import org.slas.test09112019.BR;
 import org.slas.test09112019.R;
 import org.slas.test09112019.databinding.ActivityMainBinding;
-import org.slas.test09112019.presentation.base.BaseActivity;
 import org.slas.test09112019.presentation.base.BaseNavigationActivity;
 
-public class MainActivity extends BaseNavigationActivity<ActivityMainBinding, MainViewModel> {
+public class MainActivity extends BaseNavigationActivity<ActivityMainBinding, MainViewModel>
+        implements MainNavigator {
 
     private ActivityMainBinding activityMainBinding;
     private MainViewModel mainViewModel;
@@ -42,5 +40,10 @@ public class MainActivity extends BaseNavigationActivity<ActivityMainBinding, Ma
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+    @Override
+    public void handleError(Throwable throwable) {
+        //catch error
     }
 }

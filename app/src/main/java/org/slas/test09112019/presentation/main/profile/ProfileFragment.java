@@ -10,7 +10,6 @@ import org.slas.test09112019.presentation.base.BaseFragment;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 public class ProfileFragment extends BaseFragment<FragmentMainProfileBinding, ProfileViewModel> {
