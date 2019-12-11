@@ -17,6 +17,50 @@ public class User {
     private User() {
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public Name getName() {
+        return name;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Login getLogin() {
+        return login;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public String getRegistered() {
+        return registered;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getCell() {
+        return cell;
+    }
+
+    public Id getId() {
+        return id;
+    }
+
+    public Picture getPicture() {
+        return picture;
+    }
+
     public static Builder getNewBuilder(){
         return new User().new Builder();
     }
