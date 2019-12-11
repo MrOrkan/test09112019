@@ -6,8 +6,12 @@ import android.widget.Button;
 
 import org.slas.test09112019.BR;
 import org.slas.test09112019.R;
+import org.slas.test09112019.data.model.User;
 import org.slas.test09112019.databinding.FragmentMainStartListBinding;
 import org.slas.test09112019.presentation.base.BaseFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +22,8 @@ public class StartListFragment extends BaseFragment<FragmentMainStartListBinding
 
     private FragmentMainStartListBinding fragmentMainStartListBinding;
     private StartListViewModel startListViewModel;
+
+    private List<User> usersList = new ArrayList<>();
 
     private Button button;
 
@@ -51,6 +57,12 @@ public class StartListFragment extends BaseFragment<FragmentMainStartListBinding
     private void init(){
         fragmentMainStartListBinding = getViewDataBinding();
         startListViewModel.setNavigator(this);
+        startListViewModel.init();
+        startListViewModel.getMutableLiveData().observe(this, apiResponse -> {
+            List<User> users = apiResponse.getUsers();
+            usersList.addAll(users);
+            //todo adapter notifydatasetchanged
+        });
     }
 
     private void setupLiveData(){
