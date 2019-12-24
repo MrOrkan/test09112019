@@ -1,6 +1,9 @@
 package org.slas.test09112019.data.model;
 
-public class Id {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Id implements Parcelable {
 
     private String name;
     private String value;
@@ -9,6 +12,23 @@ public class Id {
         this.name = name;
         this.value = value;
     }
+
+    protected Id(Parcel in) {
+        name = in.readString();
+        value = in.readString();
+    }
+
+    public static final Creator<Id> CREATOR = new Creator<Id>() {
+        @Override
+        public Id createFromParcel(Parcel in) {
+            return new Id(in);
+        }
+
+        @Override
+        public Id[] newArray(int size) {
+            return new Id[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -24,5 +44,16 @@ public class Id {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(value);
     }
 }

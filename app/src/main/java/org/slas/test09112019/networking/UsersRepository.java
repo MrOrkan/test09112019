@@ -10,11 +10,17 @@ import retrofit2.Response;
 
 public class UsersRepository {
 
+    public static final int COUNT = 20;
+
     private RandomApi randomApi;
     private static UsersRepository usersRepository;
 
+    private MutableLiveData<ApiResponse> apiData = new MutableLiveData<>();
+
+    private int page = 1;
+
     public UsersRepository() {
-        randomApi = RetrofitService.cteateService(RandomApi.class);
+        randomApi = RetrofitService.createService(RandomApi.class);
     }
 
     public static UsersRepository getInstance(){
@@ -25,11 +31,13 @@ public class UsersRepository {
     }
 
     public MutableLiveData<ApiResponse> getUsers(){
-        final MutableLiveData<ApiResponse> apiData = new MutableLiveData<>();
-        randomApi.getUsersList().enqueue(new Callback<ApiResponse>() {
+
+        randomApi.getUsersList(page ,COUNT).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+
                 if (response.isSuccessful()){
+                    page++;
                     apiData.setValue(response.body());
                 }
             }
@@ -37,10 +45,11 @@ public class UsersRepository {
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
                 apiData.setValue(null);
+                t.printStackTrace();
             }
         });
+
         return apiData;
     }
-
 
 }

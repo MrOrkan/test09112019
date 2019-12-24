@@ -1,21 +1,49 @@
 package org.slas.test09112019.data.model;
 
-public class User {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import org.slas.test09112019.constants.ViewType;
+import org.slas.test09112019.presentation.base.adapter.RecyclerItem;
+
+public class User implements RecyclerItem, Parcelable {
 
     private String gender;
     private Name name;
     private Location location;
     private String email;
     private Login login;
-    private String dob;
-    private String registered;
+    private Dob dob;
+    private Registered registered;
     private String phone;
     private String cell;
     private Id id;
     private Picture picture;
+    private String nat;
 
     private User() {
     }
+
+    protected User(Parcel in) {
+        gender = in.readString();
+        name = in.readParcelable(Name.class.getClassLoader());
+        email = in.readString();
+        phone = in.readString();
+        cell = in.readString();
+        nat = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getGender() {
         return gender;
@@ -37,11 +65,11 @@ public class User {
         return login;
     }
 
-    public String getDob() {
+    public Dob getDob() {
         return dob;
     }
 
-    public String getRegistered() {
+    public Registered getRegistered() {
         return registered;
     }
 
@@ -59,6 +87,10 @@ public class User {
 
     public Picture getPicture() {
         return picture;
+    }
+
+    public String getNat() {
+        return nat;
     }
 
     public static Builder getNewBuilder(){
@@ -95,12 +127,12 @@ public class User {
             return this;
         }
 
-        public Builder setDob(String dob){
+        public Builder setDob(Dob dob){
             User.this.dob = dob;
             return this;
         }
 
-        public Builder setRegistered(String registered){
+        public Builder setRegistered(Registered registered){
             User.this.registered = registered;
             return this;
         }
@@ -124,5 +156,42 @@ public class User {
             User.this.picture = picture;
             return this;
         }
+
+        public Builder setNat(String nat){
+            User.this.nat = nat;
+            return this;
+        }
+
+        public User build(){
+            return User.this;
+        }
     }
+
+    @Override
+    public Integer getViewType() {
+        return ViewType.USER_VIEW_TYPE;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(gender);
+        parcel.writeParcelable(name, i);
+        parcel.writeParcelable(location, i);
+        parcel.writeString(email);
+        parcel.writeParcelable(login, i);
+        parcel.writeParcelable(dob, i);
+        parcel.writeParcelable(registered, i);
+        parcel.writeString(phone);
+        parcel.writeString(cell);
+        parcel.writeParcelable(id, i);
+        parcel.writeParcelable(picture, i);
+        parcel.writeString(nat);
+    }
+
+
 }

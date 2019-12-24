@@ -1,36 +1,44 @@
 package org.slas.test09112019.presentation.main.list;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.Toast;
 
-import org.slas.test09112019.BR;
 import org.slas.test09112019.R;
+import org.slas.test09112019.adapters.UsersAdapter;
+import org.slas.test09112019.data.model.ApiResponse;
 import org.slas.test09112019.data.model.User;
-import org.slas.test09112019.databinding.FragmentMainStartListBinding;
+import org.slas.test09112019.networking.UsersRepository;
+import org.slas.test09112019.pagination.PaginationListener;
 import org.slas.test09112019.presentation.base.BaseFragment;
+import org.slas.test09112019.presentation.base.adapter.RecyclerItem;
+import org.slas.test09112019.presentation.main.MainViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class StartListFragment extends BaseFragment<FragmentMainStartListBinding, StartListViewModel>
+public class StartListFragment extends BaseFragment<StartListViewModel>
         implements StartListNavigator{
 
-    private FragmentMainStartListBinding fragmentMainStartListBinding;
+    private final static String TITLE_HOME = "Home";
+
     private StartListViewModel startListViewModel;
+    private MainViewModel mainViewModel;
 
-    private List<User> usersList = new ArrayList<>();
+    private ArrayList<RecyclerItem> usersList = new ArrayList<>();
+    private UsersAdapter usersAdapter;
+    private RecyclerView recyclerViewUsers;
 
-    private Button button;
-
-    @Override
-    public int getBindingVariable() {
-        return BR.viewModel;
-    }
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
 
     @Override
     protected Integer getLayout() {
@@ -44,34 +52,73 @@ public class StartListFragment extends BaseFragment<FragmentMainStartListBinding
         return startListViewModel;
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        init();
+        recyclerViewUsers = view.findViewById(R.id.recyclerViewUsers);
         setupLiveData();
-        setupAdapter();
-
+        init();
     }
 
     private void init(){
-        fragmentMainStartListBinding = getViewDataBinding();
+        if (getActivity() != null){
+            mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+            mainViewModel.updateActionBarTitle(TITLE_HOME);
+        }
+
         startListViewModel.setNavigator(this);
-        startListViewModel.init();
-        startListViewModel.getMutableLiveData().observe(this, apiResponse -> {
-            List<User> users = apiResponse.getUsers();
-            usersList.addAll(users);
-            //todo adapter notifydatasetchanged
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        if (usersAdapter == null){
+            usersAdapter = new UsersAdapter(getContext(), new ArrayList<>());
+            recyclerViewUsers.setLayoutManager(linearLayoutManager);
+            recyclerViewUsers.setAdapter(usersAdapter);
+        }
+        else {
+            usersAdapter.notifyDataSetChanged();
+        }
+
+        recyclerViewUsers.addOnScrollListener(new PaginationListener(linearLayoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                startListViewModel.loadItems();
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
         });
     }
 
     private void setupLiveData(){
+        startListViewModel.loadItems();
 
+        startListViewModel.get_apiResponseLiveData().observe(this, apiResponse -> {
+            if (apiResponse == null) return;
+
+            usersAdapter.removeLoading();
+            List<User> users = apiResponse.getUsers();
+            usersList.addAll(users);
+            usersAdapter.addItems(usersList);
+
+            if (!users.isEmpty() && users.size() >= UsersRepository.COUNT){
+                usersAdapter.addLoading();
+            } else {
+                isLastPage = true;
+            }
+            isLoading = false;
+            usersAdapter.notifyDataSetChanged();
+        });
     }
 
-    private void setupAdapter(){
 
-    }
 
     @Override
     public void showProfileFragment() {

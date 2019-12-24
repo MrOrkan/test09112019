@@ -6,57 +6,100 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import org.slas.test09112019.R;
+import org.slas.test09112019.constants.ViewType;
 import org.slas.test09112019.data.model.Name;
 import org.slas.test09112019.data.model.User;
+import org.slas.test09112019.presentation.base.adapter.BaseViewHolder;
+import org.slas.test09112019.presentation.base.adapter.RecyclerItem;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHolder>{
+public class UsersAdapter extends RecyclerView.Adapter<BaseViewHolder>{
+
+    private static final int VIEW_TYPE_LOADING = 0;
+    private static final int VIEW_TYPE_NORMAL = 1;
+    private boolean isLoaderVisible = false;
 
     private Context context;
-    private ArrayList<User> usersList;
+    private List<RecyclerItem> usersList;
 
-    public UsersAdapter(Context context, ArrayList<User> usersList) {
+    public UsersAdapter(Context context, List<RecyclerItem> recyclerItemList) {
         this.context = context;
-        this.usersList = usersList;
+        this.usersList = recyclerItemList;
     }
 
     @NonNull
     @Override
-    public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater
-                .from(context)
-                .inflate(R.layout.user_item, parent, false);
-        return new UsersViewHolder(view);
+    public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        switch (viewType){
+            case VIEW_TYPE_NORMAL:
+                return new UsersViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.item_user, parent, false));
+
+            case VIEW_TYPE_LOADING:
+                return new LoadingViewHolder(
+                        LayoutInflater.from(context)
+                        .inflate(R.layout.item_loading, parent, false));
+            default:
+                return null;
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UsersViewHolder holder, int position) {
-        User user = usersList.get(position);
+    public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
+        holder.onBind(position);
+    }
 
-        Name objectName = user.getName();
-        String name = objectName.getFirst() + " " + objectName.getLast();
-        holder.textViewName.setText(name);
-
-        Glide.with(context)
-                .load(user.getPicture().getThumbnail())
-                .into(holder.imageViewPhoto);
+    @Override
+    public int getItemViewType(int position) {
+        if (isLoaderVisible){
+            return position == usersList.size() - 1 ? VIEW_TYPE_LOADING : VIEW_TYPE_NORMAL;
+        } else{
+            return VIEW_TYPE_NORMAL;
+        }
     }
 
     @Override
     public int getItemCount() {
-        return usersList.size()
-                ;
+        return usersList == null ? 0 : usersList.size();
     }
 
-    public class UsersViewHolder extends RecyclerView.ViewHolder{
+    public void addItems(List<RecyclerItem> users){
+        usersList.addAll(users);
+        notifyDataSetChanged();
+    }
+
+    public void addLoading(){
+        isLoaderVisible = true;
+        usersList.add(() -> ViewType.LOADING_VIEW_TYPE);
+        notifyItemInserted(usersList.size() - 1);
+    }
+
+    public void removeLoading(){
+        isLoaderVisible = false;
+        int positionLoading = usersList.size() - 1;
+        if (usersList.isEmpty()) return;
+        if (usersList.get(positionLoading).getViewType() == ViewType.LOADING_VIEW_TYPE){
+            usersList.remove(positionLoading);
+            notifyItemRemoved(positionLoading);
+        }
+    }
+
+    User getItem(int position){
+        return (User) usersList.get(position);
+    }
+
+
+    public class UsersViewHolder extends BaseViewHolder{
 
         private ImageView imageViewPhoto;
         private TextView textViewName;
@@ -65,6 +108,46 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
             super(itemView);
             imageViewPhoto = itemView.findViewById(R.id.imageViewPhoto);
             textViewName = itemView.findViewById(R.id.textViewName);
+
+            itemView.setOnClickListener(view -> {
+                Toast.makeText(context, "click on " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+            });
+        }
+
+        @Override
+        protected void clear() {
+
+        }
+
+        @Override
+        public void onBind(int position) {
+            super.onBind(position);
+            RecyclerItem recyclerItem = usersList.get(position);
+
+            if (recyclerItem instanceof User){
+                User user = (User) recyclerItem;
+
+                Name objectName = user.getName();
+                String name = objectName.getFirst() + " " + objectName.getLast();
+                textViewName.setText(name);
+
+                Glide.with(context)
+                        .load(user.getPicture().getThumbnail())
+                        .into(imageViewPhoto);
+            }
+
+        }
+    }
+
+    public class LoadingViewHolder extends BaseViewHolder{
+
+        LoadingViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        protected void clear() {
+
         }
     }
 }

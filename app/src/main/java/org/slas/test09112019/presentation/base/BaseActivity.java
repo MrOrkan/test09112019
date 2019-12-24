@@ -5,18 +5,13 @@ import android.os.Bundle;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModel;
 
-public abstract class BaseActivity<T extends ViewDataBinding, V extends ViewModel> extends AppCompatActivity {
+public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity {
 
-    private T viewDataBinding;
-    private V viewModel;
+    private T viewModel;
 
-    protected abstract V createViewModel();
-
-    public abstract int getBindingVariable();
+    protected abstract T createViewModel();
 
     @LayoutRes
     protected abstract Integer getLayout();
@@ -26,17 +21,6 @@ public abstract class BaseActivity<T extends ViewDataBinding, V extends ViewMode
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
         this.viewModel = createViewModel();
-    }
-
-    private void performDataBinding(){
-        viewDataBinding = DataBindingUtil.setContentView(this, getLayout());
-        this.viewModel = viewModel == null ? createViewModel() : viewModel;
-        viewDataBinding.setVariable(getBindingVariable(), viewModel);
-        viewDataBinding.executePendingBindings();
-    }
-
-    public T getViewDataBinding() {
-        return viewDataBinding;
     }
 
 }
