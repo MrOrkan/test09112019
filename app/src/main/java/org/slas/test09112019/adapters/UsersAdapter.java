@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -26,7 +25,9 @@ public class UsersAdapter extends RecyclerView.Adapter<BaseViewHolder>{
 
     private static final int VIEW_TYPE_LOADING = 0;
     private static final int VIEW_TYPE_NORMAL = 1;
+
     private boolean isLoaderVisible = false;
+    private OnItemClickListener onItemClickListener;
 
     private Context context;
     private List<RecyclerItem> usersList;
@@ -34,6 +35,14 @@ public class UsersAdapter extends RecyclerView.Adapter<BaseViewHolder>{
     public UsersAdapter(Context context, List<RecyclerItem> recyclerItemList) {
         this.context = context;
         this.usersList = recyclerItemList;
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -94,7 +103,7 @@ public class UsersAdapter extends RecyclerView.Adapter<BaseViewHolder>{
         }
     }
 
-    User getItem(int position){
+    public User getItem(int position){
         return (User) usersList.get(position);
     }
 
@@ -110,7 +119,9 @@ public class UsersAdapter extends RecyclerView.Adapter<BaseViewHolder>{
             textViewName = itemView.findViewById(R.id.textViewName);
 
             itemView.setOnClickListener(view -> {
-                Toast.makeText(context, "click on " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                if (onItemClickListener != null){
+                    onItemClickListener.onItemClick(getAdapterPosition());
+                }
             });
         }
 

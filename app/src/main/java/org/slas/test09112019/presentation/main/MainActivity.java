@@ -3,9 +3,7 @@ package org.slas.test09112019.presentation.main;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
-import android.util.Log;
 
-import org.slas.test09112019.BR;
 import org.slas.test09112019.R;
 import org.slas.test09112019.presentation.base.BaseNavigationActivity;
 
@@ -26,7 +24,6 @@ public class MainActivity extends BaseNavigationActivity<MainViewModel>
 
     @Override
     protected MainViewModel createViewModel() {
-        //todo if dagger added (this, factory)
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         return mainViewModel;
     }

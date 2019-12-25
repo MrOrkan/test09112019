@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">test09112019</string>
+    <string name="cell_phone_profile">Cell Phone</string>
+    <string name="email_profile">Email</string>
+    <string name="years_old_profile"> years old</string>
+    <string name="call_profile">Call</string>
+    <string name="tel_dial_profile">tel:</string>
 </resources>

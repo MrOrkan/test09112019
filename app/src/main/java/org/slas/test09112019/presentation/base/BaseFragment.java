@@ -30,12 +30,6 @@ public abstract class BaseFragment<T extends BaseViewModel> extends Fragment {
         viewModel = createViewModel();
     }
 
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        viewModel = createViewModel();
-//    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -8,10 +8,12 @@
     <fragment
         android:id="@+id/startListFragment"
         android:name="org.slas.test09112019.presentation.main.list.StartListFragment"
-        android:label="StartListFragment" >
+        android:label="StartListFragment">
         <action
             android:id="@+id/action_startListFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            app:destination="@id/profileFragment"
+            app:popUpTo="@+id/startListFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"

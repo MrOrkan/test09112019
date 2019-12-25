@@ -57,6 +57,10 @@ public class Name implements Parcelable {
         this.last = last;
     }
 
+    public String getFirstAndLastName(){
+        return first + " " + last;
+    }
+
     @Override
     public int describeContents() {
         return 0;

@@ -1,8 +1,6 @@
 package org.slas.test09112019.data.model;
 
 
-import org.slas.test09112019.presentation.base.adapter.RecyclerItem;
-
 import java.util.ArrayList;
 import java.util.List;
 
